@@ -8,10 +8,51 @@
 > 5. Do not proceed past a checkpoint (`⛳`) until its verify command passes.
 > 6. If a task is ambiguous, pick the simplest option, add `# ASSUMPTION:` in the touched file, and note it in the ASSUMPTIONS section here. Do not ask.
 
-## STATE (update every session)
-- last_done: `T0.1`
-- next: `T1.1`
+## STATE
+- last_done: P0.5 (coverage metrics)
+- next: P1.6 (Benchmark C — Precinct6 loader)
 - blockers: none
+
+## DONE THIS SESSION
+- [x] P0.1 zero-budget combination count
+- [x] P0.2 RuntimeError replaces assert
+- [x] P0.3 SA parameter validation
+- [x] P0.4 traversal-cost terminology (A + B)
+- [x] P0.5 dual coverage metrics (total vs coverable)
+
+## REMAINING
+- [ ] P1.6 Benchmark C from Precinct6 GraphML
+- [ ] P1.7 multi-seed stability on C
+- [ ] P1.8 budget sweep on C
+- [ ] P2.11 update README + CHECKLIST (14→15 edges, α 0.97→0.99)
+- [ ] P3.17 GUI (partner)
+
+## STATE
+- last_done: P2.12 (documentation audit)
+- next: report writing
+- blockers: none
+
+## DONE
+- [x] P0.1 zero-budget combination count (returns 1 for k=0)
+- [x] P0.2 RuntimeError replaces assert (survives python -O)
+- [x] P0.3 SA parameter validation (T0, alpha, L, iters)
+- [x] P0.4 traversal-cost terminology (A, B, README)
+- [x] P0.5 dual coverage metrics (total + coverable)
+- [x] P1.6 Benchmark C — real Precinct6 hybrid (17 hosts, 100 paths)
+- [x] P2.11 CHECKLIST updated
+- [x] P2.12 README updated
+- [x] P2.13 NaN/infinity rejected in graph_builder
+- [x] P2.14 plots.py comparison title uses benchmark name
+
+## REMAINING (report phase — not blocking)
+- [ ] Multi-seed stability run
+- [ ] Budget sweep run
+- [ ] Report writing
+
+## KEY FINDINGS (for report)
+- A: greedy already optimal (286 placements tied with exhaustive)
+- B: SA beats greedy 5→6, matches exhaustive optimum
+- C: betweenness fails at 75%, greedy/SA/exhaustive all hit 100%
 
 ## Contracts (do not alter once written)
 Signatures in `src/models.py` and `src/coverage.py` are frozen. See the "Contracts to lock" block in the file-structure doc. No agent may change:

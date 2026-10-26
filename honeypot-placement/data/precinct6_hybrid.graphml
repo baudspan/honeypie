@@ -1,0 +1,300 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d10" for="edge" attr.name="note" attr.type="string" />
+  <key id="d9" for="edge" attr.name="synthetic" attr.type="string" />
+  <key id="d8" for="edge" attr.name="techniques" attr.type="string" />
+  <key id="d7" for="edge" attr.name="incidents" attr.type="long" />
+  <key id="d6" for="edge" attr.name="weight" attr.type="double" />
+  <key id="d5" for="node" attr.name="roles" attr.type="string" />
+  <key id="d4" for="node" attr.name="products" attr.type="string" />
+  <key id="d3" for="node" attr.name="hostname" attr.type="string" />
+  <key id="d2" for="graph" attr.name="note" attr.type="string" />
+  <key id="d1" for="graph" attr.name="target" attr.type="string" />
+  <key id="d0" for="graph" attr.name="source" attr.type="string" />
+  <graph edgedefault="directed">
+    <node id="100.64.36.183">
+      <data key="d3">100.64.36.183</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="172.25.182.147">
+      <data key="d3">172.25.182.147</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="100.64.22.146">
+      <data key="d3">100.64.22.146</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="172.30.244.134">
+      <data key="d3">172.30.244.134</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="100.64.18.180">
+      <data key="d3">100.64.18.180</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="10.187.253.125">
+      <data key="d3">host-0179.example.internal</data>
+      <data key="d4">["Precinct","ASA Firewall","Barracuda WAF"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="100.64.35.247">
+      <data key="d3">100.64.35.247</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="172.16.63.134">
+      <data key="d3">172.16.63.134</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="100.64.57.247">
+      <data key="d3">100.64.57.247</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="172.27.149.33">
+      <data key="d3">172.27.149.33</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="100.64.89.243">
+      <data key="d3">100.64.89.243</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host</data>
+    </node>
+    <node id="172.23.3.121">
+      <data key="d3">172.23.3.121</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="100.64.33.92">
+      <data key="d3">100.64.33.92</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="10.108.125.191">
+      <data key="d3">10.108.125.191</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="100.64.90.27">
+      <data key="d3">100.64.90.27</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host</data>
+    </node>
+    <node id="172.29.43.106">
+      <data key="d3">172.29.43.106</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host,Exploiting Target</data>
+    </node>
+    <node id="100.64.111.159">
+      <data key="d3">100.64.111.159</data>
+      <data key="d4">["Precinct","ASA Firewall"]</data>
+      <data key="d5">Exploiting Host</data>
+    </node>
+    <edge source="100.64.36.183" target="172.25.182.147">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="100.64.36.183" target="100.64.22.146">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 172.25.182.147</data>
+    </edge>
+    <edge source="100.64.36.183" target="100.64.18.180">
+      <data key="d6">4.0</data>
+      <data key="d9">true</data>
+      <data key="d10">long bypass</data>
+    </edge>
+    <edge source="172.25.182.147" target="100.64.22.146">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="172.25.182.147" target="172.30.244.134">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 100.64.22.146</data>
+    </edge>
+    <edge source="100.64.22.146" target="172.30.244.134">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="100.64.22.146" target="100.64.18.180">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 172.30.244.134</data>
+    </edge>
+    <edge source="172.30.244.134" target="100.64.18.180">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="172.30.244.134" target="10.187.253.125">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 100.64.18.180</data>
+    </edge>
+    <edge source="172.30.244.134" target="172.16.63.134">
+      <data key="d6">4.0</data>
+      <data key="d9">true</data>
+      <data key="d10">long bypass</data>
+    </edge>
+    <edge source="100.64.18.180" target="10.187.253.125">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="100.64.18.180" target="100.64.35.247">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 10.187.253.125</data>
+    </edge>
+    <edge source="10.187.253.125" target="100.64.35.247">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="10.187.253.125" target="172.16.63.134">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 100.64.35.247</data>
+    </edge>
+    <edge source="100.64.35.247" target="172.16.63.134">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="100.64.35.247" target="100.64.57.247">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 172.16.63.134</data>
+    </edge>
+    <edge source="100.64.35.247" target="100.64.89.243">
+      <data key="d6">4.0</data>
+      <data key="d9">true</data>
+      <data key="d10">long bypass</data>
+    </edge>
+    <edge source="172.16.63.134" target="100.64.57.247">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="172.16.63.134" target="172.27.149.33">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 100.64.57.247</data>
+    </edge>
+    <edge source="100.64.57.247" target="172.27.149.33">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="100.64.57.247" target="100.64.89.243">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 172.27.149.33</data>
+    </edge>
+    <edge source="172.27.149.33" target="100.64.89.243">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="172.27.149.33" target="172.23.3.121">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 100.64.89.243</data>
+    </edge>
+    <edge source="172.27.149.33" target="10.108.125.191">
+      <data key="d6">4.0</data>
+      <data key="d9">true</data>
+      <data key="d10">long bypass</data>
+    </edge>
+    <edge source="100.64.89.243" target="172.23.3.121">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="100.64.89.243" target="100.64.33.92">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 172.23.3.121</data>
+    </edge>
+    <edge source="172.23.3.121" target="100.64.33.92">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="172.23.3.121" target="10.108.125.191">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 100.64.33.92</data>
+    </edge>
+    <edge source="100.64.33.92" target="10.108.125.191">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="100.64.33.92" target="100.64.90.27">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 10.108.125.191</data>
+    </edge>
+    <edge source="100.64.33.92" target="100.64.111.159">
+      <data key="d6">4.0</data>
+      <data key="d9">true</data>
+      <data key="d10">long bypass</data>
+    </edge>
+    <edge source="10.108.125.191" target="100.64.90.27">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="10.108.125.191" target="172.29.43.106">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 100.64.90.27</data>
+    </edge>
+    <edge source="100.64.90.27" target="172.29.43.106">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <edge source="100.64.90.27" target="100.64.111.159">
+      <data key="d6">2.5</data>
+      <data key="d9">true</data>
+      <data key="d10">bypass of 172.29.43.106</data>
+    </edge>
+    <edge source="172.29.43.106" target="100.64.111.159">
+      <data key="d6">1.0</data>
+      <data key="d7">1</data>
+      <data key="d8">T1041,T1190,T1567</data>
+      <data key="d9">false</data>
+    </edge>
+    <data key="d0">100.64.36.183</data>
+    <data key="d1">100.64.111.159</data>
+    <data key="d2">Hybrid Precinct6: real hosts, real chain edges, synthesized bypass edges. See report §Benchmark C.</data>
+  </graph>
+</graphml>
