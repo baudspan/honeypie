@@ -30,7 +30,6 @@ from src.greedy import greedy_placement
 from src.exhaustive import exhaustive_search
 from src.annealing import simulated_annealing
 import config
-from math import comb
 
 
 # Exhaustive becomes too slow above this many combinations.
@@ -47,7 +46,7 @@ def _load(name):
         from benchmarks import benchmark_c
         G, s, t = benchmark_c.build()
     else:
-        raise ValueError(f"Unknown benchmark: {name!r} (available: A, B)")
+                raise ValueError(f"Unknown benchmark: {name!r} (available: A, B, C)")
     validate_graph(G, s, t)
     return G, s, t
 
@@ -79,7 +78,7 @@ def run_experiment(benchmark_name, k, m, seed=config.SA_SEED):
     min_path, min_cost = min_cost_path(G, s, t)
     paths = enumerate_paths(G, s, t, m=m)
 
-        # Cross-check: Dijkstra cost must equal Yen's first-path cost
+    # Cross-check: Dijkstra cost must equal Yen's first-path cost
     yen_first = paths[0]
     yen_cost = sum(
         G[yen_first[i]][yen_first[i + 1]].get("weight", 1)

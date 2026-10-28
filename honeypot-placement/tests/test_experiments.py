@@ -76,3 +76,28 @@ def test_run_experiment_includes_betweenness():
     assert r["betweenness"].covered >= 1
     # Contract: SA never worse than any single-method baseline on B
     assert r["sa"].covered >= r["betweenness"].covered
+
+def test_sa_beats_greedy_on_benchmark_b_at_k2():
+    """The flagship finding: SA strictly improves on greedy at k=2 on B."""
+    from src.experiments import run_experiment
+    for seed in range(5):  # sample 5 seeds, full run is in scripts/
+        r = run_experiment("B", k=2, m=6, seed=seed)
+        assert r["sa"].covered == 6
+        assert r["greedy"].covered == 5
+        assert r["exhaustive"].covered == 6
+
+
+def test_sa_ties_greedy_on_benchmark_c():
+    """On real data, SA never hurts — it ties the greedy optimum."""
+    from src.experiments import run_experiment
+    r = run_experiment("C", k=2, m=100, seed=42)
+    assert r["sa"].covered == r["greedy"].covered == 100
+    assert r["exhaustive"].covered == 100
+
+
+def test_betweenness_loses_coverage_on_real_data():
+    """Headline C finding: betweenness is 25 points below path-aware."""
+    from src.experiments import run_experiment
+    r = run_experiment("C", k=2, m=100, seed=42)
+    assert r["betweenness"].covered == 75
+    assert r["greedy"].covered - r["betweenness"].covered == 25
