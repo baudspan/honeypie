@@ -137,3 +137,37 @@ def test_uncoverable_and_upper_bound():
     eligible = {"a"}  # 'b' ineligible -> s->b->t uncoverable
     assert count_uncoverable(paths, eligible) == 1
     assert coverage_upper_bound(paths, eligible) == 1
+
+def test_validate_rejects_nan_weight():
+    import math
+    G = nx.DiGraph()
+    G.add_edge("a", "b", weight=float("nan"))
+    with pytest.raises(ValueError, match="Non-finite"):
+        validate_graph(G, "a", "b")
+
+
+def test_validate_rejects_infinite_weight():
+    G = nx.DiGraph()
+    G.add_edge("a", "b", weight=float("inf"))
+    with pytest.raises(ValueError, match="Non-finite"):
+        validate_graph(G, "a", "b")
+
+
+def test_validate_rejects_non_numeric_weight():
+    G = nx.DiGraph()
+    G.add_edge("a", "b", weight="heavy")
+    with pytest.raises(ValueError, match="Non-numeric"):
+        validate_graph(G, "a", "b")
+
+
+def test_validate_rejects_boolean_weight():
+    G = nx.DiGraph()
+    G.add_edge("a", "b", weight=True)
+    with pytest.raises(ValueError, match="Boolean"):
+        validate_graph(G, "a", "b")
+
+
+def test_validate_accepts_zero_weight():
+    G = nx.DiGraph()
+    G.add_edge("a", "b", weight=0)
+    validate_graph(G, "a", "b")  # must not raise
