@@ -1,0 +1,15 @@
+﻿__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+.vscode/
+.idea/
+*.egg-info/
+*.zip
+.DS_Store
+
+# Keep only hybrid + optional merged in data/
+# (uncomment next line to exclude merged when too large)
+# data/precinct6_merged.graphml

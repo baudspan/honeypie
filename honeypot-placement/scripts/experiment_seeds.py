@@ -6,13 +6,11 @@ best, worst, std, and how often SA reaches the exhaustive optimum.
 from __future__ import annotations
 import argparse
 import statistics
-import os
 import sys
 from pathlib import Path
 
 # Make `import src.*` work when invoked as `python scripts/foo.py`
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.experiments import run_experiment
 
@@ -24,6 +22,15 @@ def main():
     p.add_argument("--m", type=int, required=True)
     p.add_argument("--seeds", type=int, default=30)
     args = p.parse_args()
+
+    if args.benchmark.upper() not in ("A", "B", "C"):
+        raise SystemExit(f"--benchmark must be A, B, or C (got {args.benchmark})")
+    if args.seeds < 1:
+        raise SystemExit(f"--seeds must be >= 1 (got {args.seeds})")
+    if args.k < 0:
+        raise SystemExit(f"--k must be >= 0 (got {args.k})")
+    if args.m <= 0:
+        raise SystemExit(f"--m must be > 0 (got {args.m})")
 
     sa_coverages = []
     sa_runtimes = []
@@ -47,7 +54,6 @@ def main():
             opt_cov = ex
         sa_coverages.append(sa)
         sa_runtimes.append(r["sa"].runtime_s * 1000)
-
         print(f"  {seed:>4}  {g:>6}  {sa:>4}  "
               f"{(ex if ex is not None else 'n/a'):>7}  "
               f"{r['sa'].runtime_s * 1000:>15.3f}")

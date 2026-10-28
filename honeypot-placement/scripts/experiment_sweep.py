@@ -1,14 +1,13 @@
-"""Budget sensitivity: run all methods for k = 0..K on one benchmark."""
+"""Budget sensitivity: run all methods for k = 0..K on one benchmark.
+
+Fixed graph, fixed m. Reports coverage per (method, k) and runtime.
+"""
 from __future__ import annotations
 import argparse
-
-import os
 import sys
 from pathlib import Path
 
-# Make `import src.*` work when invoked as `python scripts/foo.py`
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.experiments import run_experiment
 
@@ -20,6 +19,13 @@ def main():
     p.add_argument("--kmax", type=int, default=5)
     p.add_argument("--seed", type=int, default=42)
     args = p.parse_args()
+
+    if args.benchmark.upper() not in ("A", "B", "C"):
+        raise SystemExit(f"--benchmark must be A, B, or C (got {args.benchmark})")
+    if args.kmax < 0:
+        raise SystemExit(f"--kmax must be >= 0 (got {args.kmax})")
+    if args.m <= 0:
+        raise SystemExit(f"--m must be > 0 (got {args.m})")
 
     print(f"Budget sweep on Benchmark {args.benchmark} "
           f"(m={args.m}, seed={args.seed})")

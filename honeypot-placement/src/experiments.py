@@ -18,8 +18,8 @@ from __future__ import annotations
 from math import comb
 from src.centrality import betweenness, betweenness_placement
 
-from benchmarks import benchmark_a, benchmark_b
-from src.graph_builder import validate_graph, define_eligible
+from benchmarks import benchmark_b
+from src.graph_builder import load_benchmark, define_eligible
 from src.reachability import is_reachable
 from src.shortest_path import min_cost_path
 from src.candidate_paths import (
@@ -35,20 +35,6 @@ import config
 # Exhaustive becomes too slow above this many combinations.
 EXHAUSTIVE_COMBO_CAP = 100_000
 
-
-def _load(name):
-    name = name.upper()
-    if name == "A":
-        G, s, t = benchmark_a.build()
-    elif name == "B":
-        G, s, t = benchmark_b.build()
-    elif name == "C":
-        from benchmarks import benchmark_c
-        G, s, t = benchmark_c.build()
-    else:
-                raise ValueError(f"Unknown benchmark: {name!r} (available: A, B, C)")
-    validate_graph(G, s, t)
-    return G, s, t
 
 
 def _n_combinations(n: int, k: int) -> int:
@@ -70,7 +56,7 @@ def run_experiment(benchmark_name, k, m, seed=config.SA_SEED):
     if m <= 0:
         raise ValueError(f"m must be > 0 (got {m}).")
     name = benchmark_name.upper()
-    G, s, t = _load(name)
+    G, s, t = load_benchmark(name)
 
     if not is_reachable(G, s, t):
         raise ValueError(f"Target {t!r} not reachable from {s!r} in benchmark {name}")
