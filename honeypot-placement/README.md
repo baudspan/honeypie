@@ -44,7 +44,7 @@ Paths (m≥6):
 Incidence: `A→{1,2,3,4}`, `B→{1,2,5}`, `C→{3,4,6}`.
 Expected at `k=2`: greedy = 5, optimal `{B,C}` = 6, SA must reach 6.
 
-**C — seeded random graph.** 30–50 nodes, `m∈[30,100]`, `k∈[3,5]`. Scan seeds; disclose the selected seed; report how often greedy was already optimal across all scanned seeds.
+**C — real Precinct6 hybrid.** 17 hosts, 36 edges. Host IPs, hostnames, role assignments, and the 11-hop chain come from 100 real WitFoo Precinct6 incidents merged by IP. Bypass edges (skip-1, skip-2 forward) are **synthesized** to create multiple distinct routes — without them the merged graph is hub-and-spoke and has no multi-path structure. Chain-edge weight = 1.0; synthetic bypass weight = 2.5–4.0 (higher cost models a costlier alternate pivot). Greedy is already optimal on this graph; betweenness covers only 75% of the 100 candidate paths — the headline finding for Benchmark C.
 
 ## Build order
 **CORE (rubric-complete at end of step 4):**
