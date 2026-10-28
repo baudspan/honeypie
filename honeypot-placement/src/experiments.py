@@ -47,7 +47,7 @@ def _load(name):
         from benchmarks import benchmark_c
         G, s, t = benchmark_c.build()
     else:
-        raise ValueError(f"Unknown benchmark: {name!r} (available: A, B)")
+        raise ValueError(f"Unknown benchmark: {name!r} (available: A, B, C)")
     validate_graph(G, s, t)
     return G, s, t
 

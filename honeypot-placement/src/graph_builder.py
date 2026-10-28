@@ -25,6 +25,9 @@ def load_benchmark(name: str) -> tuple[nx.DiGraph, str, str]:
     return G, s, t
 
 
+import math
+
+
 def validate_graph(G: nx.DiGraph, s: str, t: str) -> None:
     """Raise ValueError if the graph violates input assumptions."""
     if not isinstance(G, nx.DiGraph):
@@ -35,9 +38,14 @@ def validate_graph(G: nx.DiGraph, s: str, t: str) -> None:
         raise ValueError(f"Target node {t!r} not in graph.")
     for u, v, data in G.edges(data=True):
         w = data.get("weight", 1)
+        if not isinstance(w, (int, float)):
+            raise ValueError(
+                f"Non-numeric weight on edge {u}->{v}: {w!r} (type {type(w).__name__})"
+            )
+        if not math.isfinite(w):
+            raise ValueError(f"Non-finite weight on edge {u}->{v}: {w}")
         if w < 0:
             raise ValueError(f"Negative weight on edge {u}->{v}: {w}")
-
 
 def define_eligible(G: nx.DiGraph, s: str, t: str, excluded=None) -> set:
     """Eligible honeypot locations: V \\ {s, t}, minus an optional excluded set."""
