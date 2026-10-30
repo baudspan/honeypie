@@ -1,189 +1,103 @@
----
+# Attack Path Analysis & Honeypot Placement Optimization
 
-## How to Run
+Console Python tool that models a simulated network as a directed weighted graph, enumerates realistic attacker routes with Yen's K-shortest loopless paths, and selects up to `k` honeypot locations to maximize distinct attack paths covered. Three placement methods — greedy, betweenness top-k, Simulated Annealing — are compared against each other and against exhaustive optimum on small instances.
 
-### Setup (once)
+## Problem
+Given directed weighted graph `G=(V,E,w)`, source `s`, target `t`, candidate path set `P` (from Yen, capped at `m`), eligible honeypot set `Vc`, budget `k`:
+maximize `|{ p ∈ P : p ∩ S ≠ ∅ }|` subject to `|S| ≤ k`, `S ⊆ Vc`.
+This is **budgeted maximum coverage** (NP-hard in general). Greedy has a `(1−1/e)` worst-case guarantee; SA explores for improvement; exhaustive validates on small instances.
+
+## Pipeline
+```
+edge list → build graph → BFS reachability → Dijkstra min-cost route
+  → Yen K-shortest loopless paths (≤ m) → betweenness centrality
+  → greedy → SA (init at greedy, best-so-far) → exhaustive (small only)
+  → console tables + optional plot
+```
+
+## Algorithm stack
+| Algorithm | Role | Mandatory |
+|---|---|---|
+| NetworkX directed weighted graph | Representation | yes |
+| BFS | Reachability pre-check | yes |
+| Dijkstra | Min-cost route; cross-check vs Yen's first path (compare cost, not identity) | yes |
+| Yen K-shortest loopless | Candidate set `P` | yes |
+| Betweenness centrality | Structural analysis + top-k baseline placement | yes |
+| Greedy marginal coverage | Primary baseline | yes |
+| Simulated Annealing | Metaheuristic improvement | yes |
+| Exhaustive search | Exact optimum on small instances | yes (validation) |
+| Matplotlib | Coverage-vs-k plot | optional |
+
+## Definitions
+- **Vc** (eligible): default `V \ {s,t}`; benchmarks may shrink it (e.g. routers ineligible).
+- **Coverage** `f(S) = |{p ∈ P : p ∩ S ≠ ∅}|`, evaluated by one function in `coverage.py` used by all four methods.
+- **"Covered"** = path contains ≥1 selected node. Simplified proxy for detection, not a guarantee.
+- **Uncoverable paths:** if `p ∩ Vc = ∅`, coverage for `p` is 0; report count and coverage upper bound `r − |uncoverable|`.
+
+## Benchmarks
+**A — ~15-node corporate network.** Gateway→firewall→DMZ→switches→app/DB with side branches. Full-pipeline validation. Greedy may already be optimal here (valid result).
+
+**B — 11-node greedy-failure graph.** All weights = 1. `Vc = {A,B,C}`. Ineligible: `q₁,q₂,r₁,r₂,r₃,r₄`. Endpoints: `s,t`.
+Edges: `s→A, s→q₁, s→q₂, A→r₁, A→r₂, A→r₃, A→r₄, r₁→B, r₂→B, r₃→C, r₄→C, q₁→B, q₂→C, B→t, C→t`.
+Paths (m≥6):
+`p₁=s→A→r₁→B→t`, `p₂=s→A→r₂→B→t`, `p₃=s→A→r₃→C→t`, `p₄=s→A→r₄→C→t`, `p₅=s→q₁→B→t`, `p₆=s→q₂→C→t`.
+Incidence: `A→{1,2,3,4}`, `B→{1,2,5}`, `C→{3,4,6}`.
+Expected at `k=2`: greedy = 5, optimal `{B,C}` = 6, SA must reach 6.
+
+**C — real Precinct6 hybrid.** 17 hosts, 36 edges. Host IPs, hostnames, role annotations, and the 16-hop chain come from 100 real WitFoo Precinct6 incidents merged by IP. Bypass edges (skip-1 and skip-3 forward) are **synthesized** to create multiple distinct routes — without them the merged graph is hub-and-spoke and has no multi-path structure to optimize over. Chain-edge weight = 1.0; synthetic bypass weight = 2.5–4.0 (higher cost models a costlier alternate pivot). Greedy is already optimal on this graph at most budgets; betweenness covers only 75% of the 100 candidate paths at `k=2` — the headline finding for Benchmark C. See §3.4 of the report for the full observed-vs-synthetic disclosure.
+
+## Build order
+**CORE (rubric-complete at end of step 4):**
+1. `graph_builder`, `reachability`, `shortest_path`, `candidate_paths`
+2. `models`, `coverage`, `greedy`, `exhaustive` + their tests
+3. `annealing` + `benchmark_b` + `test_benchmark_b`
+4. `experiments` + `report` (Experiments A, B)
+
+**EXTENDED (only after core passes):**
+5. `centrality` + betweenness baseline + Experiment F overlap
+6. `plots` + budget sweep (Experiment C)
+7. SA seed stability (Experiment E)
+8. `benchmark_c` seed scan
+
+## Run
+```
+python main.py --benchmark A --k 3 --m 20
+python main.py --benchmark B --k 2 --m 6
+pytest tests/ -q
+```
+
+## Limitations (one line each)
+- Topology, weights, paths are simulated.
+- Only first `m` shortest loopless paths considered.
+- Cheapest path ≠ most dangerous path.
+- Path covered ≠ attacker detected.
+- Static, non-adaptive attacker.
+- Greedy `(1−1/e)` approximation; may already be optimal.
+- SA improvement is empirical, not guaranteed.
+- Exhaustive only on small instances.
+- Benchmark C is seed-selected to illustrate a difference.
+## Dashboard (Streamlit)
+
+A dark-themed interactive dashboard that exposes everything the backend computes.
 
 ```powershell
-# Python 3.10+
-python -m venv .venv
 .venv\Scripts\Activate.ps1
-
 pip install -r requirements.txt
-```
-
-### Run a benchmark (CLI)
-
-```powershell
-# Benchmark A — 15-node corporate network (dense, greedy-optimal)
-python main.py --benchmark A --k 3 --m 20 --seed 42
-
-# Benchmark B — 11-node greedy trap (SA beats greedy 5 -> 6)
-python main.py --benchmark B --k 2 --m 20 --seed 42
-
-# Benchmark C — 17-node real Precinct6 hybrid (100 paths, betweenness fails at 75%)
-python main.py --benchmark C --k 2 --m 100 --seed 42
-```
-
-**Arguments:**
-
-| Flag | Description | Default |
-|---|---|---|
-| `--benchmark`, `-b` | `A`, `B`, or `C` | `B` |
-| `--k` | Honeypot budget (how many to place) | 3 |
-| `--m` | Max candidate paths (Yen cap) | 20 |
-| `--seed` | SA random seed (reproducibility) | 42 |
-
-**Output:** console table comparing Greedy, Betweenness, SA, and Exhaustive — with coverage, coverage %, runtime, iterations, and gap-to-optimum.
-
-### Run the test suite
-
-```powershell
-python -m pytest tests/ -v
-```
-
-**Expected:** 82 tests passing.
-
-### Generate figures
-
-```powershell
-python visualize.py --benchmark all
-```
-
-Produces 6 PNGs in `results/`:
-
-| File | Content |
-|---|---|
-| `benchmark_a_network.png` | Network topology (roles + weights) |
-| `benchmark_a_paths.png` | Candidate paths, one panel per route |
-| `benchmark_a_comparison.png` | Greedy / Betweenness / SA / Exhaustive side-by-side |
-| `benchmark_b_network.png` | The 11-node trap graph |
-| `benchmark_b_paths.png` | The 6 trap paths |
-| `benchmark_b_comparison.png` | **The money shot** — visual proof of the greedy trap |
-| `benchmark_c_*.png` | Same for the real Precinct6 hybrid |
-
-### Where the data lives
-
-```
-data/
-├── precinct6_merged.graphml     # 648 hosts, 1340 edges (raw merged incidents)
-└── precinct6_hybrid.graphml     # 17 hosts, 36 edges (benchmark C)
-```
-
-Regenerate both from scratch if needed:
-
-```powershell
-python scripts/fetch_precinct6.py       # download + merge 100 incidents
-python scripts/build_hybrid_c.py        # extract 17-node chain + bypass edges
-```
-
-### Reference outputs (for report / viva)
-
-Run these once, save to `results/`:
-
-```powershell
-New-Item -ItemType Directory -Force -Path results | Out-Null
-
-python main.py --benchmark A --k 3 --m 20  --seed 42 | Tee-Object results/A_baseline.txt
-python main.py --benchmark B --k 2 --m 20  --seed 42 | Tee-Object results/B_baseline.txt
-python main.py --benchmark C --k 2 --m 100 --seed 42 | Tee-Object results/C_baseline.txt
-
-# Budget sweep on C
-1..5 | ForEach-Object { python main.py --benchmark C --k $_ --m 100 --seed 42 } | Tee-Object results/C_sweep.txt
-
-# Seed stability on C
-1..10 | ForEach-Object { python main.py --benchmark C --k 2 --m 100 --seed $_ } | Tee-Object results/C_seeds.txt
-```
-
----
-
-## For the GUI partner
-
-### What the GUI will display
-
-The GUI consumes the same data structures the CLI produces. Nothing new to compute.
-
-### Contract to build against
-
-Every placement method returns the same object:
-
-```python
-from src.models import PlacementResult
-
-# PlacementResult fields:
-#   nodes      : frozenset[str]      — chosen honeypot hosts
-#   covered    : int                 — number of paths covered
-#   total_paths: int                 — total candidate paths (for %)
-#   runtime_s  : float               — wall-clock seconds
-#   iterations : int                 — 0 for non-iterative methods (SA uses it)
-```
-
-### Entry points to call
-
-| Function | Purpose | Returns |
-|---|---|---|
-| `src.experiments.run_experiment(name, k, m, seed)` | Full pipeline on one benchmark | `dict` with all 4 placements + metadata |
-| `src.graph_builder.load_benchmark("A"\|"B"\|"C")` | Load a graph | `(nx.DiGraph, s, t)` |
-| `src.candidate_paths.enumerate_paths(G, s, t, m)` | Yen path set | `list[list[str]]` |
-| `src.coverage.build_index(paths, eligible)` | Precomputed node→path-idx | `dict[str, frozenset[int]]` |
-| `src.coverage.coverage(S, index)` | Objective — **the only place this is computed** | `int` |
-| `src.greedy.greedy_placement(index, n_paths, k)` | Greedy baseline | `PlacementResult` |
-| `src.centrality.betweenness(G, eligible)` + `betweenness_placement(...)` | Centrality baseline | `dict` + `PlacementResult` |
-| `src.annealing.simulated_annealing(index, n_paths, k, init, T0, alpha, L, iters, seed)` | SA optimization | `PlacementResult` |
-| `src.exhaustive.exhaustive_search(index, n_paths, k)` | Exact optimum (small instances) | `PlacementResult` |
-
-### Example: one call gets you everything
-
-```python
-from src.experiments import run_experiment
-
-r = run_experiment("B", k=2, m=20, seed=42)
-# r["greedy"]      -> PlacementResult
-# r["betweenness"] -> PlacementResult
-# r["sa"]          -> PlacementResult
-# r["exhaustive"]  -> PlacementResult or None (if too many combos)
-# r["paths"]       -> list[list[str]]      (the candidate attack paths)
-# r["index"]       -> dict[str, frozenset[int]]
-# r["G"], r["s"], r["t"], r["eligible"]
-```
-
-### Runnable app (already written, if you want to extend it)
-
-```powershell
-pip install streamlit plotly
 streamlit run app.py
 ```
 
-Six tabs: Network → Paths → Centrality → Greedy → SA → Compare. Extend or replace as you like — the backend is just `run_experiment()`.
+Run it from the project root. Sidebar sections: Overview, Network Topology, Attack Path Analysis,
+Centrality Analysis, Greedy Algorithm, Simulated Annealing, Exhaustive Search, Algorithm Comparison,
+Generated Results, Experiment Runner, Precinct6 Dataset.
 
-### Rules the GUI must honour (contract)
+* All numbers come from `src.experiments.run_experiment()` - the UI re-implements no algorithm.
+* The **Experiment Runner** changes benchmark, `k`, `m`, seed and the SA parameters (T0, alpha, L, iterations);
+  identical settings are cached. Optional PNG generation writes to `results/dashboard_runs/<settings>/`
+  and never overwrites the figures already in `results/`.
+* Layout: `app.py` (entry), `ui/` (theme, data layer, network view, tabs), `.streamlit/config.toml` (theme).
+* Additive backend hooks used by the dashboard (all backward compatible, CLI unchanged):
+  `run_experiment(..., sa_params=None)` plus extra result keys (`G`, `paths`, `index`, `greedy_trace`,
+  `sa_history`), `greedy_placement_with_trace`, `simulated_annealing_with_history`, `covered_ids`,
+  and `visualize.generate_figures` (now also supports Benchmark C).
+* Tests: `python -m pytest tests/ -v` (dashboard smoke tests are skipped if Streamlit is not installed).
 
-1. **Do not re-implement coverage** — always import `src.coverage.coverage`
-2. **Do not re-implement any placement algorithm** — call the module functions
-3. **Only `src/report.py` prints** — GUI should use its own display logic, not `report.py`
-4. **SA seeds are explicit** — pass `seed=` argument, never `random.seed()`
-5. **Ties broken deterministically** — use `src.coverage.sorted_tiebreak`
-
----
-
-## Project structure
-
-```
-honeypot-placement/
-├── main.py                      # CLI entry
-├── visualize.py                 # Static figure generator
-├── app.py                       # Streamlit GUI (partner's territory)
-├── config.py                    # SA parameters + defaults
-├── requirements.txt
-├── README.md                    # this file
-├── CHECKLIST.md
-│
-├── benchmarks/                  # A (corporate), B (trap), C (real Precinct6)
-├── data/                        # Precinct6 GraphML (merged + hybrid)
-├── scripts/                     # fetch_precinct6.py, build_hybrid_c.py
-├── src/                         # algorithms + pipeline
-├── tests/                       # 82 pytest tests
-└── results/                     # generated outputs (gitignored)
-```
-
-**Import direction is one-way:** `models ← coverage ← greedy/annealing/exhaustive ← experiments ← main`. Nothing imports upward. The GUI sits above `experiments` and imports only from `src.*`.
